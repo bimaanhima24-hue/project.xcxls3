@@ -1,0 +1,8 @@
+{
+  "name": "Antrian Farmasi",
+  "description": "Sistem pengelolaan antrian obat racikan dan non-racikan di instalasi farmasi dengan pemantauan waktu pelayanan secara realtime.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

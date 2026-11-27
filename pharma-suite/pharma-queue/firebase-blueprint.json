@@ -1,0 +1,54 @@
+{
+  "entities": {
+    "queue": {
+      "title": "Queue",
+      "description": "Item antrian farmasi",
+      "type": "object",
+      "properties": {
+        "id_pasien": {
+          "type": "string",
+          "description": "ID Pasien atau nama pasien"
+        },
+        "jumlah_obat_racik": {
+          "type": "integer",
+          "description": "Jumlah obat racikan"
+        },
+        "jumlah_obat_non_racik": {
+          "type": "integer",
+          "description": "Jumlah obat non-racikan"
+        },
+        "waktu_resep_masuk": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Waktu masuk resep dalam ISO format"
+        },
+        "waktu_resep_selesai": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Waktu selesai peracikan resep dalam ISO format"
+        },
+        "waktu_obat_diserahkan": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Waktu obat diserahkan kepada pasien"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["menunggu", "proses", "selesai", "diserahkan"],
+          "description": "Status antrian saat ini"
+        },
+        "uid": {
+          "type": "string",
+          "description": "UID dari user petugas yang memasukkan data"
+        }
+      },
+      "required": ["id_pasien", "jumlah_obat_racik", "jumlah_obat_non_racik", "waktu_resep_masuk", "status", "uid"]
+    }
+  },
+  "firestore": {
+    "/queues/{queueId}": {
+      "schema": "queue",
+      "description": "Koleksi data antrian resep pasien farmasi"
+    }
+  }
+}

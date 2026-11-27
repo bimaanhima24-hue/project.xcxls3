@@ -1,0 +1,8 @@
+{
+  "name": "PharmLoad: Puskesmas Workload Analyst",
+  "description": "Analisis beban kerja layanan farmasi puskesmas menggunakan rekonstruksi antrean FIFO untuk menghitung utilisasi staf dan waktu tunggu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
