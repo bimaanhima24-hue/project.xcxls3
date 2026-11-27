@@ -1,10 +1,12 @@
-name: Deploy Pharm Analyst Staff to GitHub Pages
+name: Deploy Portal & Pharm Analyst Staff to GitHub Pages
 
 on:
   push:
     branches: ["main"]
     paths:
-      - "pharma-suite/pharm-analyst-staff/**"
+      - "index.html"
+      - "assets/**"
+      - "pharma-suite/**"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -20,9 +22,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: pharma-suite/pharm-analyst-staff
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,17 +34,31 @@ jobs:
           cache-dependency-path: pharma-suite/pharm-analyst-staff/package-lock.json
 
       - name: Install dependencies
+        working-directory: pharma-suite/pharm-analyst-staff
         run: npm ci
 
-      - name: Build
+      - name: Build Pharm Analyst Staff
+        working-directory: pharma-suite/pharm-analyst-staff
         env:
           VITE_BASE: /project.xcxls3/pharma-suite/pharm-analyst-staff/
         run: npx vite build --base=$VITE_BASE
 
+      - name: Add 404 fallback for SPA
+        run: cp pharma-suite/pharm-analyst-staff/dist/index.html pharma-suite/pharm-analyst-staff/dist/404.html
+
+      - name: Assemble site with portal and module
+        run: |
+          rm -rf _site
+          mkdir -p _site/pharma-suite/pharm-analyst-staff
+          [ -f index.html ] && cp index.html _site/ || true
+          [ -d assets ] && cp -r assets _site/ || true
+          [ -d pharma-suite/pharma-queue ] && cp -r pharma-suite/pharma-queue _site/pharma-suite/ || true
+          cp -r pharma-suite/pharm-analyst-staff/dist/* _site/pharma-suite/pharm-analyst-staff/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: pharma-suite/pharm-analyst-staff/dist
+          path: _site
 
   deploy:
     environment:
