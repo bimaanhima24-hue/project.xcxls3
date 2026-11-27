@@ -1,4 +1,4 @@
-name: Deploy Portal & Pharm Analyst Staff to GitHub Pages
+name: Deploy Portal & Pharma Suite to GitHub Pages
 
 on:
   push:
@@ -30,30 +30,45 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
-          cache-dependency-path: pharma-suite/pharm-analyst-staff/package-lock.json
 
-      - name: Install dependencies
+      # 1. Build modul pharm-analyst-staff
+      - name: Install pharm-analyst-staff dependencies
         working-directory: pharma-suite/pharm-analyst-staff
-        run: npm ci
+        run: npm install
 
-      - name: Build Pharm Analyst Staff
+      - name: Build pharm-analyst-staff
         working-directory: pharma-suite/pharm-analyst-staff
         env:
           VITE_BASE: /project.xcxls3/pharma-suite/pharm-analyst-staff/
         run: npx vite build --base=$VITE_BASE
 
-      - name: Add 404 fallback for SPA
+      - name: Add 404 fallback for pharm-analyst-staff
         run: cp pharma-suite/pharm-analyst-staff/dist/index.html pharma-suite/pharm-analyst-staff/dist/404.html
 
-      - name: Assemble site with portal and module
+      # 2. Build modul pharma-queue
+      - name: Install pharma-queue dependencies
+        working-directory: pharma-suite/pharma-queue
+        run: npm install
+
+      - name: Build pharma-queue
+        working-directory: pharma-suite/pharma-queue
+        env:
+          VITE_BASE: /project.xcxls3/pharma-suite/pharma-queue/
+        run: npx vite build --base=$VITE_BASE
+
+      - name: Add 404 fallback for pharma-queue
+        run: cp pharma-suite/pharma-queue/dist/index.html pharma-suite/pharma-queue/dist/404.html
+
+      # 3. Gabungkan portal utama + kedua hasil build modul ke _site
+      - name: Assemble site with portal and both modules
         run: |
           rm -rf _site
           mkdir -p _site/pharma-suite/pharm-analyst-staff
+          mkdir -p _site/pharma-suite/pharma-queue
           [ -f index.html ] && cp index.html _site/ || true
           [ -d assets ] && cp -r assets _site/ || true
-          [ -d pharma-suite/pharma-queue ] && cp -r pharma-suite/pharma-queue _site/pharma-suite/ || true
           cp -r pharma-suite/pharm-analyst-staff/dist/* _site/pharma-suite/pharm-analyst-staff/
+          cp -r pharma-suite/pharma-queue/dist/* _site/pharma-suite/pharma-queue/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
