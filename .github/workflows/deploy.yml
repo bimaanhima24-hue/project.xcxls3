@@ -7,6 +7,7 @@ on:
       - "index.html"
       - "assets/**"
       - "pharma-suite/**"
+      - "resep-4-9-may.csv"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -57,9 +58,9 @@ jobs:
         run: npx vite build --base=$VITE_BASE
 
       - name: Add 404 fallback for pharma-queue
-        run: cp pharma-suite/pharma-queue/dist/index.html pharma-suite/pharma-queue/dist/404.html
+        run: cp pharma-suite/pharma-queue/dist/index.html pharma-suite/pharm-analyst-staff/dist/404.html
 
-      # 3. Gabungkan portal utama + kedua hasil build modul ke _site
+      # 3. Gabungkan portal utama + kedua hasil build modul + file CSV ke _site
       - name: Assemble site with portal and both modules
         run: |
           rm -rf _site
@@ -67,6 +68,7 @@ jobs:
           mkdir -p _site/pharma-suite/pharma-queue
           [ -f index.html ] && cp index.html _site/ || true
           [ -d assets ] && cp -r assets _site/ || true
+          [ -f "resep-4-9-may.csv" ] && cp "resep-4-9-may.csv" _site/ || true
           cp -r pharma-suite/pharm-analyst-staff/dist/* _site/pharma-suite/pharm-analyst-staff/
           cp -r pharma-suite/pharma-queue/dist/* _site/pharma-suite/pharma-queue/
 
@@ -85,6 +87,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-        
- [ -f "resep-4-9-may.csv" ] && cp "resep-4-9-may.csv" _site/ || true
